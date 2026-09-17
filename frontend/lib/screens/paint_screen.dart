@@ -39,7 +39,9 @@ class _PaintScreenState extends State<PaintScreen> {
   int maxPoints = 0;
   String winner = "";
   bool isShowFinalLeaderboard = false;
-  bool isMyTurn = false;
+  bool get isMyTurn {
+  return dataOfRoom['turn']?['socketId'] == socket?.id;
+  }
 
   String get host {
     const productionHost = String.fromEnvironment('BACKEND_URL');
@@ -104,10 +106,7 @@ class _PaintScreenState extends State<PaintScreen> {
 
     socket!.on('updateRoom', (roomData) {
       final room = roomData['room'] ?? roomData;
-      isMyTurn =
-          room['turn']?['socketId'] != null &&
-          room['turn']['socketId'] == socket?.id;
-
+      
       setState(() {
         dataOfRoom = room;
 

@@ -258,7 +258,10 @@ export const disconnect = async (socket) => {
     await room.save();
     io.to(room.name).emit("updateRoom", room);
     if (wasCurrentTurn) {
-      io.to(room.name).emit("change-turn", room);
+      io.to(room.name).emit("change-turn", {
+        room,
+        isNewRound: false,
+      });
     }
   } catch (error) {
     console.error("Disconnect error:", error);
