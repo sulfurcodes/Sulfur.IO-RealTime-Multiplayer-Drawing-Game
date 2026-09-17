@@ -40,7 +40,7 @@ class _PaintScreenState extends State<PaintScreen> {
   String winner = "";
   bool isShowFinalLeaderboard = false;
   bool get isMyTurn {
-  return dataOfRoom['turn']?['socketId'] == socket?.id;
+    return dataOfRoom['turn']?['socketId'] == socket?.id;
   }
 
   String get host {
@@ -106,7 +106,7 @@ class _PaintScreenState extends State<PaintScreen> {
 
     socket!.on('updateRoom', (roomData) {
       final room = roomData['room'] ?? roomData;
-      
+
       setState(() {
         dataOfRoom = room;
 
@@ -434,6 +434,11 @@ class _PaintScreenState extends State<PaintScreen> {
                               : null,
                           onPanStart: isMyTurn
                               ? (details) {
+                                  socket!.emit('paint', {
+                                    'details': null,
+                                    'roomName': widget.data['name'],
+                                  });
+
                                   final point = TouchPoints(
                                     paint: Paint()
                                       ..strokeCap = StrokeCap.round
@@ -446,6 +451,7 @@ class _PaintScreenState extends State<PaintScreen> {
                                   );
 
                                   setState(() {
+                                    points.add(null);
                                     points.add(point);
                                   });
 
@@ -455,6 +461,18 @@ class _PaintScreenState extends State<PaintScreen> {
                                       'dy': details.localPosition.dy,
                                     },
                                     'roomName': widget.data['name'],
+                                  });
+                                }
+                              : null,
+                          onPanCancel: isMyTurn
+                              ? () {
+                                  socket!.emit('paint', {
+                                    'details': null,
+                                    'roomName': widget.data['name'],
+                                  });
+
+                                  setState(() {
+                                    points.add(null);
                                   });
                                 }
                               : null,
